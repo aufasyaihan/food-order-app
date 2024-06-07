@@ -20,7 +20,7 @@ export default function Checkout() {
   }
 
   return (
-    <Modal open={userPorgressCtx.progress === "checkout"}>
+    <Modal open={userPorgressCtx.progress === "checkout"} onClose={handleClose}>
       <form action="">
         <h2>Checkout</h2>
         <p>Total Amount : {formattedPrice.format(cartTotal)}</p>
