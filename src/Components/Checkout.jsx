@@ -27,6 +27,19 @@ export default function Checkout() {
 
   function onSubmit(data) {
     console.log("form submitted", data);
+
+    fetch("http://localhost:3000/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        order: {
+          items: cartCtx.items,
+          customer: data,
+        },
+      }),
+    });
   }
 
   return (
@@ -37,17 +50,15 @@ export default function Checkout() {
         <Input
           label="Full Name"
           type="text"
-          id="full-name"
-          {...register("full-name", {
+          id="name"
+          {...register("name", {
             required: {
               value: true,
               message: "Name is required",
             },
           })}
         />
-        {errors["full-name"] && (
-          <p className="error">{errors["full-name"].message}</p>
-        )}
+        {errors["name"] && <p className="error">{errors["name"].message}</p>}
         <Input
           label="Email Address"
           type="email"
