@@ -10,7 +10,8 @@ import { DevTool } from "@hookform/devtools";
 
 export default function Checkout() {
   const form = useForm();
-  const { register, control, handleSubmit } = form;
+  const { register, control, handleSubmit, formState } = form;
+  const { errors } = formState;
   //   const { name, ref, onChange, onBlur } = register("full-name"); // One approach
   const cartCtx = useContext(CartContext);
   const userPorgressCtx = useContext(userProgressContext);
@@ -37,23 +38,75 @@ export default function Checkout() {
           label="Full Name"
           type="text"
           id="full-name"
-          {...register("full-name")}
+          {...register("full-name", {
+            required: {
+              value: true,
+              message: "Name is required",
+            },
+          })}
         />
+        {errors["full-name"] && (
+          <p className="error">{errors["full-name"].message}</p>
+        )}
         <Input
           label="Email Address"
           type="email"
           id="email"
-          {...register("email")}
+          {...register("email", {
+            required: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "invalid email format",
+            },
+          })}
         />
-        <Input label="Street" type="text" id="street" {...register("street")} />
+        {errors["email"] && <p className="error">{errors["email"].message}</p>}
+        <Input
+          label="Street"
+          type="text"
+          id="street"
+          {...register("street", {
+            required: {
+              value: true,
+              message: "Street is required",
+            },
+          })}
+        />
+        {errors["street"] && (
+          <p className="error">{errors["street"].message}</p>
+        )}
         <div className="control-row">
-          <Input
-            label="Postal Code"
-            type="text"
-            id="postal-code"
-            {...register("postal-code")}
-          />
-          <Input label="City" type="text" id="city" {...register("city")} />
+          <div>
+            <Input
+              label="Postal Code"
+              type="text"
+              id="postal-code"
+              {...register("postal-code", {
+                required: {
+                  value: true,
+                  message: "Postal Code is required",
+                },
+              })}
+            />
+            {errors["postal-code"] && (
+              <p className="error">{errors["postal-code"].message}</p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="City"
+              type="text"
+              id="city"
+              {...register("city", {
+                required: {
+                  value: true,
+                  message: "City is required",
+                },
+              })}
+            />
+            {errors["city"] && (
+              <p className="error">{errors["city"].message}</p>
+            )}
+          </div>
         </div>
         <div className="modal-actions">
           <Button onClick={handleClose} type="button" textOnly>
