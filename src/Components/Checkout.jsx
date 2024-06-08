@@ -7,6 +7,15 @@ import Button from "./UI/Button";
 import userProgressContext from "../store/UserPorgessContext";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import useFetch from "../assets/hooks/useFetch";
+import Error from "./Error";
+
+const config = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
 
 export default function Checkout() {
   const form = useForm();
@@ -15,6 +24,14 @@ export default function Checkout() {
   //   const { name, ref, onChange, onBlur } = register("full-name"); // One approach
   const cartCtx = useContext(CartContext);
   const userPorgressCtx = useContext(userProgressContext);
+
+  const {
+    data,
+    isLoading: isSending,
+    error,
+    sendRequest,
+    clearData,
+  } = useFetch("http://localhost:3000/orders", config);
 
   const cartTotal = cartCtx.items.reduce(
     (totalPrice, item) => totalPrice + item.quantity * item.price,
@@ -25,21 +42,49 @@ export default function Checkout() {
     userPorgressCtx.hideCheckout();
   }
 
+  function handleFinish(){
+    userPorgressCtx.hideCheckout();
+    cartCtx.clearCart();
+    clearData();
+  }
+
   function onSubmit(data) {
     console.log("form submitted", data);
 
-    fetch("http://localhost:3000/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    sendRequest(
+      JSON.stringify({
         order: {
           items: cartCtx.items,
           customer: data,
         },
-      }),
-    });
+      })
+    );
+  }
+
+  let actions = (
+    <>
+      <Button onClick={handleClose} type="button" textOnly>
+        Close
+      </Button>
+      <Button>Submit Order</Button>
+    </>
+  );
+
+  if (isSending) {
+    actions = <p>Sending the Data...</p>;
+  }
+
+  if (data && !error) {
+    return (
+      <Modal
+        open={userPorgressCtx.progress === "checkout"}
+        onClose={handleClose}
+      >
+        <h2>Order Submitted</h2>
+        <p>Thank you for your order</p>
+        <Button onClick={handleFinish}>Okay</Button>
+      </Modal>
+    );
   }
 
   return (
@@ -119,12 +164,8 @@ export default function Checkout() {
             )}
           </div>
         </div>
-        <div className="modal-actions">
-          <Button onClick={handleClose} type="button" textOnly>
-            Close
-          </Button>
-          <Button>Submit Order</Button>
-        </div>
+        {error && <Error title="An Error Occured" message={error} />}
+        <div className="modal-actions">{actions}</div>
       </form>
       <DevTool control={control} />
     </Modal>

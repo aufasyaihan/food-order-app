@@ -17,11 +17,15 @@ export default function useFetch(url, config, initialValue) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
+  function clearData(){
+    setData(initialValue);
+  }
+
   const sendRequest = useCallback(
-    async function sendRequest() {
+    async function sendRequest(data) {
       setIsLoading(true);
       try {
-        const resData = await sendHttpRequest(url, config);
+        const resData = await sendHttpRequest(url, {...config, body : data});
         setData(resData);
       } catch (error) {
         setError(error.message || "Something went wrong");
@@ -42,5 +46,6 @@ export default function useFetch(url, config, initialValue) {
     isLoading,
     error,
     sendRequest,
+    clearData,
   };
 }
