@@ -1,6 +1,7 @@
 import MealItem from "./MealItem";
 import useFetch from "../assets/hooks/useFetch";
 import { useMemo } from "react";
+import Error from "./Error";
 
 const requestConfig = {};
 
@@ -14,7 +15,11 @@ export default function Meals() {
   } = useFetch("http://localhost:3000/meals", requestConfig, []);
 
   if (isLoading) {
-    return <p>Fetching Data...</p>;
+    return <p className="center">Fetching Data...</p>;
+  }
+
+  if(error){
+    return <Error title="An Error Occured" message={error}/>
   }
 
   console.log(meals);

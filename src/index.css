@@ -133,8 +133,16 @@ h1 {
 }
 
 .error{
+  border-radius: 10px;
+  padding: 10px;
+  width: 30%;
+  margin: 0 auto;
+  background-color: pink;
   color: red;
   font-size: 10px;
+}
+.center{
+  text-align: center;
 }
 
 .cart-total {
