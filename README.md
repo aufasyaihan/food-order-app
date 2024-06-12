@@ -10,7 +10,7 @@
 git init
 git clone https://github.com/aufasyaihan/food-order-app.git
 ```
-### Instal modules
+### Install modules
 ```
 npm install
 ```
